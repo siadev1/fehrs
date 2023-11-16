@@ -17,7 +17,11 @@ class PharmacyMiddleware
     {
 
         $user = $request->user();
-        if($user->role->id === 1 || $user->role->id=== 2){
+        
+        if($user->role->id === 1){
+            return response()->json("Unverified");
+        }
+        if($user->role->id === 2 || $user->role->id=== 3){
             return $next($request);
         }
         return response()->json("Unauthorized");

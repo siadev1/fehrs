@@ -27,17 +27,13 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
      $request->user();
 });
-// Route::post('/tokens/create', function (Request $request) {
-//     $token = $request->user()->createToken($request->token_name);
- 
-//     return ['token' => $token->plainTextToken];
-// });
+
+# this featur is'nt working yet
 Route::middleware('auth:sanctum','admin')->post('/mail', function (Request $request) {
      // $user = User::findOrFail($request->id);
-     $url = URL::temporarySignedRoute('doc',now()->addSeconds(60),['name'=>'sia']);
+     $url = URL::temporarySignedRoute('register',now()->addSeconds(60),['name'=>'sia']);
      Mail::to($request->email)->send(new WelcomeMail($url));
      return response()->json(["message"=>"email sent"]);
-     //     return ['token' => $token->plainTextToken];
      });
 Route::middleware('auth:sanctum')->get('/patients',[PatientController::class, 'total']);
 Route::middleware('auth:sanctum','doc')->get('/patient',[PatientController::class, 'show']);
@@ -65,7 +61,7 @@ Route::get('/boom/{name}', function(\Illuminate\Http\Request $request,$name){
     }
     return redirect("https://google.com");
 //     response()->json(array( 'details'=>true));
-})->name('doc');
+})->name('register');
 
 // Route::get('/sign',function(){
 //  $url = URL::temporarySignedRoute('doc',now()->addSeconds(30),['name'=>'sia']);

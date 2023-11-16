@@ -34,19 +34,39 @@ class FortifyServiceProvider extends ServiceProvider
         $this->app->instance(LoginResponse::class, new class implements LoginResponse {
             public function toResponse($request)
             {
-                return response()->json("login successfull");;
+                /**
+                 * @var User $user
+                 */
+                $user = $request->user();
+                return $request->wantsJson()
+                    ? response()->json(['two_factor' => false,
+                                        'name'=>$user->name, 
+                                        'email' => $user->email,
+                                        'role_id'=>$user->role_id,
+                                        'role'=>$user->role->name
+                                         ])
+                    : redirect()->intended(Fortify::redirects('login'));
             }
-
-            
         });
+
+
 
         $this->app->instance(RegisterResponse::class, new class implements RegisterResponse {
             public function toResponse($request)
             {
-                Mail::to($request->user())->send(new WelcomeMail($user));
- 
-                return redirect('/orders');
-                return redirect('/');
+                /**
+                 * @var User $user
+                 */
+                $user = $request->user();
+                // Mail::to($request->user())->send(new WelcomeMail($user));
+                return $request->wantsJson()
+                    ? response()->json(['two_factor' => false,
+                                        'name'=>$user->name, 
+                                        'email' => $user->email,
+                                        'role_id'=>$user->role_id
+                                         ])
+                    : redirect()->intended(Fortify::redirects('login'));
+               
             }
         });
     
